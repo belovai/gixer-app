@@ -1,5 +1,6 @@
 # Gixer
 
+This is a tinkering project. Not for production yet.
 
 ## Development
 
