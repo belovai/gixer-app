@@ -53,6 +53,30 @@ func (repo *UserRepository) GetUserByEmail(ctx context.Context, email string) (m
 	return user, nil
 }
 
+func (repo *UserRepository) GetUsers(ctx context.Context, limit, offset int) (users []model.User, total int, err error) {
+	const countQuery = `SELECT count(*) FROM users`
+	if err := repo.db.QueryRow(ctx, countQuery).Scan(&total); err != nil {
+		return nil, 0, err
+	}
+
+	const getUsersQuery = `SELECT * FROM users ORDER BY id LIMIT $1 OFFSET $2`
+
+	rows, err := repo.db.Query(ctx, getUsersQuery, limit, offset)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		user, err := repo.scanUser(rows)
+		if err != nil {
+			return nil, 0, err
+		}
+		users = append(users, user)
+	}
+
+	return users, total, nil
+}
+
 func (repo *UserRepository) scanUser(row pgx.Row) (model.User, error) {
 	var user model.User
 	err := row.Scan(

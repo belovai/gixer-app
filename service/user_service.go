@@ -35,3 +35,19 @@ func (s *UserService) CreateUser(ctx context.Context, params repository.CreateUs
 
 	return s.userRepository.CreateUser(ctx, params)
 }
+
+func (s *UserService) GetUsers(ctx context.Context, page, pageSize int) ([]model.User, int, error) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+	if pageSize > 100 {
+		pageSize = 100
+	}
+
+	offset := (page - 1) * pageSize
+
+	return s.userRepository.GetUsers(ctx, pageSize, offset)
+}

@@ -7,6 +7,7 @@ import (
 	"github.com/belovai/gixer-app/config"
 	"github.com/belovai/gixer-app/database"
 	"github.com/belovai/gixer-app/repository"
+	"github.com/belovai/gixer-app/service"
 )
 
 type application struct {
@@ -15,6 +16,7 @@ type application struct {
 	debugLog     *log.Logger
 	config       config.Config
 	repositories *repository.Repositories
+	services     *service.Services
 }
 
 func main() {
@@ -31,24 +33,13 @@ func main() {
 	defer dbConn.Close()
 
 	app.repositories = repository.InitRepositories(dbConn)
+	app.services = service.InitServices(app.repositories)
 
-	//usr := repository.CreateUserParams{
-	//	Email:    "d@example.com",
-	//	Password: "password",
-	//	Timezone: "UTC",
-	//	Locale:   "en",
-	//	Enabled:  false,
-	//}
-	//
-	//userService := service.NewUserService(app.repositories.UserRepository)
-	//
-	//user, err := userService.CreateUser(context.Background(), usr)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//app.infoLog.Printf("User: %+v", user)
+	r := app.routes()
 
+	if err = r.Run(":8080"); err != nil {
+		app.errorLog.Fatal(err)
+	}
 }
 
 func (app *application) init() (err error) {
