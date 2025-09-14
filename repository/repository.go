@@ -2,10 +2,13 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 )
+
+var ErrNotFound = errors.New("record not found")
 
 type DbConnection interface {
 	Exec(context.Context, string, ...interface{}) (pgconn.CommandTag, error)

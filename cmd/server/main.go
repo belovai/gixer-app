@@ -33,14 +33,16 @@ func main() {
 	app.repositories = repository.InitRepositories(dbConn)
 
 	//usr := repository.CreateUserParams{
-	//	Email:    "a@example.com",
+	//	Email:    "d@example.com",
 	//	Password: "password",
 	//	Timezone: "UTC",
 	//	Locale:   "en",
 	//	Enabled:  false,
 	//}
 	//
-	//user, err := app.repositories.UserRepository.CreateUser(context.Background(), usr)
+	//userService := service.NewUserService(app.repositories.UserRepository)
+	//
+	//user, err := userService.CreateUser(context.Background(), usr)
 	//if err != nil {
 	//	panic(err)
 	//}
@@ -60,16 +62,4 @@ func (app *application) init() (err error) {
 	}
 
 	return nil
-}
-
-func (app *application) migrate() {
-	//dsn := "postgres://postgres:password@localhost:5432/gixer?sslmode=disable"
-
-	//conn, err := pgx.Connect(context.Background(), dsn)
-	//if err != nil {
-	//	app.errorLog.Fatalf("Unable to connect to database: %v\\n", err)
-	//}
-	//
-	//defer conn.Close(context.Background())
-
 }
