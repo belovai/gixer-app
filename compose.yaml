@@ -1,0 +1,20 @@
+services:
+  db:
+    image: timescale/timescaledb:latest-pg16
+    ports:
+      - ${FORWARD_POSTGRES_PORT:-5432}:5432
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-password}
+      POSTGRES_DB: ${DATABASE_DBNAME:-gixer}
+    volumes:
+      - gixer-db:/var/lib/postgresql/data
+    networks:
+      - gixer-app
+
+volumes:
+  gixer-db:
+    driver: local
+
+networks:
+  gixer-app:
+    driver: bridge
