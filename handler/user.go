@@ -1,10 +1,12 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/belovai/gixer-app/model"
+	"github.com/belovai/gixer-app/repository"
 	"github.com/belovai/gixer-app/service"
 	"github.com/gin-gonic/gin"
 )
@@ -20,14 +22,46 @@ type PaginatedUsersResponse struct {
 	PageSize int          `json:"page_size"`
 }
 
+type RegisterRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required,min=8,max=100"`
+}
+
 func NewUserHandler(userService *service.UserService) *UserHandler {
 	return &UserHandler{
 		userService: userService,
 	}
 }
 
-func (h *UserHandler) CreateUser(c *gin.Context) {
+func (h *UserHandler) Register(c *gin.Context) {
+	var request RegisterRequest
 
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	params := repository.CreateUserParams{
+		Email:    request.Email,
+		Password: request.Password,
+	}
+
+	user, err := h.userService.CreateUser(c, params)
+	if err != nil {
+		if errors.Is(err, service.ErrEmailTaken) {
+			c.JSON(http.StatusConflict, gin.H{"error": "email address already in use"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		//c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to register user"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, user)
+}
+
+func (h *UserHandler) CreateUser(c *gin.Context) {
+	c.JSON(http.StatusOK, nil)
 }
 
 func (h *UserHandler) ListUsers(c *gin.Context) {

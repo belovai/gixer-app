@@ -2,6 +2,9 @@ package service
 
 import (
 	"context"
+	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
 
@@ -13,11 +16,18 @@ import (
 var ErrEmailTaken = errors.New("email address is already in use")
 
 type UserService struct {
-	userRepository *repository.UserRepository
+	userRepository     *repository.UserRepository
+	apiTokenRepository *repository.ApiTokenRepository
 }
 
-func NewUserService(userRepository *repository.UserRepository) *UserService {
-	return &UserService{userRepository: userRepository}
+func NewUserService(
+	userRepository *repository.UserRepository,
+	apiTokenRepository *repository.ApiTokenRepository,
+) *UserService {
+	return &UserService{
+		userRepository:     userRepository,
+		apiTokenRepository: apiTokenRepository,
+	}
 }
 
 func (s *UserService) CreateUser(ctx context.Context, params repository.CreateUserParams) (model.User, error) {
@@ -50,4 +60,18 @@ func (s *UserService) GetUsers(ctx context.Context, page, pageSize int) ([]model
 	offset := (page - 1) * pageSize
 
 	return s.userRepository.GetUsers(ctx, pageSize, offset)
+}
+
+func (s *UserService) generateApiToken() (string, string, error) {
+	randomBytes := make([]byte, 32)
+	if _, err := rand.Read(randomBytes); err != nil {
+		return "", "", err
+	}
+
+	plainTextToken := hex.EncodeToString(randomBytes)
+
+	hash := sha256.Sum256([]byte(plainTextToken))
+	tokenHash := hex.EncodeToString(hash[:])
+
+	return plainTextToken, tokenHash, nil
 }

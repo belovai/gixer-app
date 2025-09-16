@@ -8,6 +8,6 @@ type Services struct {
 
 func InitServices(repositories *repository.Repositories) *Services {
 	return &Services{
-		UserService: NewUserService(repositories.UserRepository),
+		UserService: NewUserService(repositories.UserRepository, repositories.ApiTokenRepository),
 	}
 }

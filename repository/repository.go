@@ -17,11 +17,13 @@ type DbConnection interface {
 }
 
 type Repositories struct {
-	UserRepository *UserRepository
+	UserRepository     *UserRepository
+	ApiTokenRepository *ApiTokenRepository
 }
 
 func InitRepositories(db DbConnection) *Repositories {
 	return &Repositories{
-		UserRepository: NewUserRepository(db),
+		UserRepository:     NewUserRepository(db),
+		ApiTokenRepository: NewApiTokenRepository(db),
 	}
 }

@@ -37,6 +37,22 @@ func (repo *UserRepository) CreateUser(ctx context.Context, params CreateUserPar
 	return user, nil
 }
 
+func (repo *UserRepository) GetUserById(ctx context.Context, id int64) (model.User, error) {
+	const getUserByIdQuery = `SELECT * FROM users WHERE id = $1 LIMIT 1`
+
+	row := repo.db.QueryRow(ctx, getUserByIdQuery, id)
+
+	user, err := repo.scanUser(row)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return model.User{}, ErrNotFound
+		}
+		return model.User{}, err
+	}
+
+	return user, nil
+}
+
 func (repo *UserRepository) GetUserByEmail(ctx context.Context, email string) (model.User, error) {
 	const getUserByEmailQuery = `SELECT * FROM users WHERE email = $1 LIMIT 1`
 
@@ -75,6 +91,20 @@ func (repo *UserRepository) GetUsers(ctx context.Context, limit, offset int) (us
 	}
 
 	return users, total, nil
+}
+
+func (repo *UserRepository) GetUserByApiToken(ctx context.Context, token string) (model.User, error) {
+	const getUserByApiTokenQuery = `SELECT user_id, abilities FROM api_tokens WHERE token_hash = $1 LIMIT 1`
+	var apiToken model.ApiToken
+	err := repo.db.QueryRow(ctx, getUserByApiTokenQuery, token).Scan(&apiToken.UserId, &apiToken.Abilities)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return model.User{}, ErrNotFound
+		}
+		return model.User{}, err
+	}
+
+	return repo.GetUserById(ctx, apiToken.UserId)
 }
 
 func (repo *UserRepository) scanUser(row pgx.Row) (model.User, error) {

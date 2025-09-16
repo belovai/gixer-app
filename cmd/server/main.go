@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -37,7 +38,7 @@ func main() {
 
 	r := app.routes()
 
-	if err = r.Run(":8080"); err != nil {
+	if err = r.Run(fmt.Sprintf("%s:%d", app.config.Server.Host, app.config.Server.Port)); err != nil {
 		app.errorLog.Fatal(err)
 	}
 }
