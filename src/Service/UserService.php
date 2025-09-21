@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\DTO\User\AuthResponseDto;
+use App\DTO\User\LoginDto;
 use App\DTO\User\RegisterUserDto;
 use App\Entity\User;
 use App\Exception\ValidationException;
@@ -18,7 +20,8 @@ class UserService
         private readonly EntityManagerInterface $entityManager,
         private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly ValidatorInterface $validator
+        private readonly ValidatorInterface $validator,
+        private readonly UserTokenService $tokenService
     ) {
         //
     }
@@ -26,14 +29,9 @@ class UserService
     public function register(RegisterUserDto $dto): User
     {
         $errors = $this->validator->validate($dto);
-
         if (count($errors) > 0) {
             throw new ValidationException($errors);
         }
-//
-//        if ($this->userRepository->findOneBy(['email' => $dto->email])) {
-//            throw new BadRequestHttpException('Email address is already registered.');
-//        }
 
         $user = new User(
             email: $dto->email,
@@ -52,5 +50,35 @@ class UserService
         $this->entityManager->flush();
 
         return $user;
+    }
+
+    public function login(LoginDto $dto): AuthResponseDto
+    {
+        $errors = $this->validator->validate($dto);
+        if (count($errors) > 0) {
+            throw new ValidationException($errors);
+        }
+
+        $user = $this->userRepository->findOneBy(['email' => $dto->email]);
+        if (!$user || !$this->passwordHasher->isPasswordValid($user, $dto->password)) {
+            throw new BadRequestHttpException('Invalid credentials.');
+        }
+
+        if (!$user->isEnabled()) {
+            throw new BadRequestHttpException('User account is disabled.');
+        }
+
+        $token = $this->tokenService->generateAuthToken($user);
+
+        return new AuthResponseDto($token);
+    }
+
+    public function logout(?User $user): int
+    {
+        if (!$user) {
+            return 0;
+        }
+
+        return $this->tokenService->revokeAllTokens($user);
     }
 }

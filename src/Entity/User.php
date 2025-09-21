@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Repository\UserTokenRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -59,6 +62,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
     private \DateTimeInterface $updatedAt;
 
+    /**
+     * @var Collection<int, UserToken>
+     */
+    #[ORM\OneToMany(targetEntity: UserToken::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private Collection $tokens;
+
     public function __construct(
         string $email,
         ?string $password = null,
@@ -73,6 +82,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->locale = $locale;
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->tokens = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -209,4 +219,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->email;
     }
+
+    /**
+     * @return Collection<int, UserToken>
+     */
+    public function getTokens(): Collection
+    {
+        return $this->tokens;
+    }
+
 }
