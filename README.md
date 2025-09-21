@@ -1,5 +1,7 @@
 # gixer
 
+This is a tinkering project. Not for production yet.
+
 ## Testing
 
 First, create the database and the schema:
