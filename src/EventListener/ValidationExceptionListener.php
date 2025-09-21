@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\EventListener;
@@ -20,7 +21,7 @@ class ValidationExceptionListener
         $response = new JsonResponse([
             'success' => false,
             'message' => $exception->getMessage(),
-            'errors' => $exception->errors()
+            'errors' => $exception->errors(),
         ], 422);
 
         $event->setResponse($response);

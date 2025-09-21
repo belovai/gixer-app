@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\DTO\User;
@@ -23,5 +24,4 @@ class RegisterUserDto
     #[Assert\NotBlank]
     #[Assert\Language]
     public ?string $locale = 'en';
-
 }

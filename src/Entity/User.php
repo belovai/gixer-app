@@ -1,10 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use App\Repository\UserTokenRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -73,7 +73,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         ?string $password = null,
         ?string $uuid = null,
         string $timezone = 'UTC',
-        string $locale = 'en'
+        string $locale = 'en',
     ) {
         $this->uuid = $uuid ?? Uuid::uuid4()->toString();
         $this->email = $email;
@@ -227,5 +227,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->tokens;
     }
-
 }

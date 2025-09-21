@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Request;
@@ -10,9 +11,8 @@ readonly class JsonRequest
 {
     public function __construct(
         private RequestStack $request,
-        private SerializerInterface $serializer
+        private SerializerInterface $serializer,
     ) {
-        //
     }
 
     public function denormalize(string $class): object

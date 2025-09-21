@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -21,9 +22,8 @@ class UserService
         private readonly UserRepository $userRepository,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly ValidatorInterface $validator,
-        private readonly UserTokenService $tokenService
+        private readonly UserTokenService $tokenService,
     ) {
-        //
     }
 
     public function register(RegisterUserDto $dto): User

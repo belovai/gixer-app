@@ -2,6 +2,12 @@
 
 This is a tinkering project. Not for production yet.
 
+## Coding Stile Fixes
+
+```bash
+./vendor/bin/php-cs-fixer fix src
+```
+
 ## Testing
 
 First, create the database and the schema:

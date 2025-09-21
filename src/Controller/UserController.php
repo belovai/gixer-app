@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -18,13 +19,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api', name: 'api_')]
 final class UserController extends AbstractController
 {
-
     public function __construct(
         private readonly UserService $userService,
         private readonly SerializerInterface $serializer,
         private readonly JsonRequest $jsonRequest,
     ) {
-        //
     }
 
     #[Route('/users/register', name: 'users_register', methods: ['POST'])]
@@ -34,13 +33,13 @@ final class UserController extends AbstractController
         $user = $this->userService->register($dto);
 
         $userData = $this->serializer->serialize($user, 'json', [
-            'groups' => ['user:public']
+            'groups' => ['user:public'],
         ]);
 
         return $this->json([
             'success' => true,
             'message' => 'User registered successfully',
-            'data' => json_decode($userData, true)
+            'data' => json_decode($userData, true),
         ], Response::HTTP_CREATED);
     }
 
@@ -55,7 +54,7 @@ final class UserController extends AbstractController
             'message' => 'Login successful',
             'data' => [
                 'token' => $authResponse->token,
-            ]
+            ],
         ]);
     }
 
@@ -66,6 +65,4 @@ final class UserController extends AbstractController
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
     }
-
-
 }

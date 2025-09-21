@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Security;
@@ -12,7 +13,6 @@ readonly class AccessTokenHandler implements AccessTokenHandlerInterface
 {
     public function __construct(private UserTokenRepository $tokenRepository)
     {
-        //
     }
 
     public function getUserBadgeFrom(#[\SensitiveParameter] string $accessToken): UserBadge

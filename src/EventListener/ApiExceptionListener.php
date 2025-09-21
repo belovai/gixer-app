@@ -1,9 +1,9 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\EventListener;
 
-use App\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\Serializer\Exception\MissingConstructorArgumentsException;
@@ -20,15 +20,15 @@ class ApiExceptionListener
         match (true) {
             $exception instanceof MissingConstructorArgumentsException => [
                 $statusCode = 422, // Unprocessable Entity
-                $message = sprintf('Request body is missing required parameter(s): %s', $exception->getMissingConstructorArguments()[0] ?? 'unknown')
+                $message = sprintf('Request body is missing required parameter(s): %s', $exception->getMissingConstructorArguments()[0] ?? 'unknown'),
             ],
             $exception instanceof NotNormalizableValueException => [
                 $statusCode = 422, // Unprocessable Entity
-                $message = sprintf('The type of the "%s" attribute is not valid. Expected "%s", but "%s" given.', $exception->getPath(), implode('|', (array)$exception->getExpectedTypes()), $exception->getCurrentType())
+                $message = sprintf('The type of the "%s" attribute is not valid. Expected "%s", but "%s" given.', $exception->getPath(), implode('|', (array) $exception->getExpectedTypes()), $exception->getCurrentType()),
             ],
             $exception instanceof \InvalidArgumentException && str_contains($exception->getMessage(), 'Invalid JSON data') => [
                 $statusCode = 400, // Bad Request
-                $message = 'The request body contains malformed JSON.'
+                $message = 'The request body contains malformed JSON.',
             ],
             default => null,
         };

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Exception;
@@ -10,7 +11,7 @@ class ValidationException extends HttpException
 {
     public function __construct(
         private readonly ConstraintViolationListInterface $errors,
-        $message = 'Validation failed'
+        $message = 'Validation failed',
     ) {
         parent::__construct(422, $message);
     }
@@ -21,6 +22,7 @@ class ValidationException extends HttpException
         foreach ($this->errors as $error) {
             $result[$error->getPropertyPath()][] = $error->getMessage();
         }
+
         return $result;
     }
 }

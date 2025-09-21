@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -16,7 +17,6 @@ class UserTokenService
         private readonly UserTokenRepository $tokenRepository,
         private readonly RequestStack $requestStack,
     ) {
-        //
     }
 
     public function generateAuthToken(User $user): string
@@ -25,7 +25,7 @@ class UserTokenService
         $this->entityManager->flush();
 
         $token = $this->generateToken();
-        $tokenEntity = new UserToken($user, hash('sha256', ($token)));
+        $tokenEntity = new UserToken($user, hash('sha256', $token));
         $tokenEntity->setUserAgent($this->requestStack->getCurrentRequest()?->headers->get('User-Agent'));
         $tokenEntity->setIpAddress($this->requestStack->getCurrentRequest()?->getClientIp());
 
@@ -44,5 +44,4 @@ class UserTokenService
     {
         return bin2hex(random_bytes(32));
     }
-
 }

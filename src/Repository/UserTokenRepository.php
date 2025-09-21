@@ -20,6 +20,7 @@ class UserTokenRepository extends ServiceEntityRepository
     public function findOneByValue(string $token): ?UserToken
     {
         $token = hash('sha256', $token);
+
         return $this->createQueryBuilder('t')
             ->andWhere('t.token = :token')
             ->andWhere('t.deletedAt IS NULL')
@@ -47,5 +48,4 @@ class UserTokenRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
-
 }
