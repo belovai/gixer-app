@@ -87,7 +87,7 @@ class RegisterTest extends ApiTestCase
             ]
         );
 
-        $this->assertResponseStatusCodeSame(500);
+        $this->assertResponseStatusCodeSame(422);
     }
 
     #[Test]
@@ -120,7 +120,7 @@ class RegisterTest extends ApiTestCase
             ]
         );
 
-        $this->assertResponseStatusCodeSame(500);
+        $this->assertResponseStatusCodeSame(422);
     }
 
     #[Test]
@@ -290,7 +290,7 @@ class RegisterTest extends ApiTestCase
             ]
         );
 
-        $this->assertResponseStatusCodeSame(500);
+        $this->assertResponseStatusCodeSame(400);
     }
 
     #[Test]
@@ -307,6 +307,6 @@ class RegisterTest extends ApiTestCase
             ]
         );
 
-        $this->assertResponseStatusCodeSame(500);
+        $this->assertResponseStatusCodeSame(422);
     }
 }

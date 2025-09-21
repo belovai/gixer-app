@@ -18,21 +18,10 @@ class RegisterUserDto
 
     #[Assert\NotBlank]
     #[Assert\Timezone]
-    public ?string $timezone = null;
+    public ?string $timezone = 'UTC';
 
     #[Assert\NotBlank]
     #[Assert\Language]
-    public ?string $locale = null;
+    public ?string $locale = 'en';
 
-    public function __construct(
-        string $email,
-        string $password,
-        string $timezone = 'UTC',
-        string $locale = 'en'
-    ) {
-        $this->email = $email;
-        $this->password = $password;
-        $this->timezone = $timezone;
-        $this->locale = $locale;
-    }
 }
