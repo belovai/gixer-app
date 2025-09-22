@@ -8,11 +8,14 @@ use PHPUnit\Framework\Attributes\Test;
 class RegisterTest extends ApiTestCase
 {
     #[Test]
-    public function successful_registration(): void
+    public function successfulRegistration(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'foo@bar.com',
@@ -31,11 +34,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function successful_registration_with_extra_details(): void
+    public function successfulRegistrationWithExtraDetails(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'foo@bar.com',
@@ -58,11 +64,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_invalid_email_format(): void
+    public function registrationFailsWithInvalidEmailFormat(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'invalid-email',
@@ -75,11 +84,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_missing_email(): void
+    public function registrationFailsWithMissingEmail(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'password' => '12345678',
@@ -91,11 +103,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_empty_email(): void
+    public function registrationFailsWithEmptyEmail(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => '',
@@ -108,11 +123,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_missing_password(): void
+    public function registrationFailsWithMissingPassword(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'test@example.com',
@@ -124,11 +142,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_empty_password(): void
+    public function registrationFailsWithEmptyPassword(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'test@example.com',
@@ -141,11 +162,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_password_too_short(): void
+    public function registrationFailsWithPasswordTooShort(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'test@example.com',
@@ -158,12 +182,15 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_duplicate_email(): void
+    public function registrationFailsWithDuplicateEmail(): void
     {
         // First registration should succeed
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'duplicate@example.com',
@@ -175,9 +202,12 @@ class RegisterTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
 
         // Second registration with same email should fail
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'duplicate@example.com',
@@ -190,11 +220,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_invalid_timezone(): void
+    public function registrationFailsWithInvalidTimezone(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'test@example.com',
@@ -208,11 +241,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_invalid_locale(): void
+    public function registrationFailsWithInvalidLocale(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'test@example.com',
@@ -226,13 +262,16 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_email_too_long(): void
+    public function registrationFailsWithEmailTooLong(): void
     {
-        $longEmail = str_repeat('a', 250) . '@example.com'; // Over 255 characters
+        $longEmail = str_repeat('a', 250).'@example.com'; // Over 255 characters
 
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => $longEmail,
@@ -245,11 +284,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_whitespace_only_email(): void
+    public function registrationFailsWithWhitespaceOnlyEmail(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => '   ',
@@ -262,11 +304,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_succeeds_with_whitespace_only_password(): void
+    public function registrationSucceedsWithWhitespaceOnlyPassword(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => 'test@example.com',
@@ -280,11 +325,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_malformed_json(): void
+    public function registrationFailsWithMalformedJson(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'body' => '{"email": "test@example.com", "password": "12345678"', // Missing closing brace
             ]
@@ -294,11 +342,14 @@ class RegisterTest extends ApiTestCase
     }
 
     #[Test]
-    public function registration_fails_with_null_values(): void
+    public function registrationFailsWithNullValues(): void
     {
-        static::createClient()->request(
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $client->request(
             'POST',
-            '/api/users/register',
+            $urlGenerator->generate('api_users_register'),
             [
                 'json' => [
                     'email' => null,
