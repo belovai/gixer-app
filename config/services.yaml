@@ -46,3 +46,7 @@ services:
     App\EventListener\ApiExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
+
+    _instanceof:
+        App\Validator\Authentication\AuthenticationTypeValidatorInterface:
+            tags: [ 'app.auth_type_validator' ]

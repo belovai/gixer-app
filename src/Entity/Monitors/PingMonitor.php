@@ -20,7 +20,7 @@ class PingMonitor extends Monitorable
 
     public function __construct(
         string $hostname,
-        int $packetSize = 32,
+        int $packetSize = 56,
     ) {
         $this->hostname = $hostname;
         $this->packetSize = $packetSize;
@@ -49,6 +49,4 @@ class PingMonitor extends Monitorable
 
         return $this;
     }
-
-
 }

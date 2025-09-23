@@ -68,11 +68,27 @@ class HttpMonitor extends Monitorable
         string $url,
         HttpMethodEnum $httpMethod,
         array $expectedStatusCodes,
+        ?string $httpBody = null,
+        ?array $httpHeaders = null,
+        ?array $authentication = null,
+        ?string $expectedContent = null,
+        int $timeout = 10,
+        int $maxRedirects = 10,
+        bool $upsideDown = false,
+        bool $ignoreSslErrors = false,
     ) {
         $this->uuid = $uuid ?? Uuid::uuid4()->toString();
         $this->url = $url;
         $this->httpMethod = $httpMethod;
         $this->expectedStatusCodes = $expectedStatusCodes;
+        $this->httpBody = $httpBody;
+        $this->httpHeaders = $httpHeaders;
+        $this->authentication = $authentication;
+        $this->expectedContent = $expectedContent;
+        $this->timeout = $timeout;
+        $this->maxRedirects = $maxRedirects;
+        $this->upsideDown = $upsideDown;
+        $this->ignoreSslErrors = $ignoreSslErrors;
     }
 
     public function getUrl(): ?string

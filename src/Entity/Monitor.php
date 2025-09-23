@@ -71,6 +71,17 @@ class Monitor
         $this->retryMax = $retryMax;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function monitorTypes(): array
+    {
+        return [
+            'http',
+            'ping',
+        ];
+    }
+
     public function getId(): ?int
     {
         return $this->id;
