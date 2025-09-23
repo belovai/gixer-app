@@ -34,8 +34,8 @@ class CreateMonitorDto
 
     #[Assert\NotBlank]
     #[Assert\Choice(callback: [Monitor::class, 'monitorTypes'])]
-    public string $type;
+    public ?string $type = null;
 
     #[Assert\NotBlank]
-    public array $details;
+    public ?array $details = null;
 }
