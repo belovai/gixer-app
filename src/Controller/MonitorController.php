@@ -5,11 +5,16 @@ namespace App\Controller;
 use App\DTO\Monitor\CreateHttpMonitorDto;
 use App\DTO\Monitor\CreateMonitorDto;
 use App\DTO\Monitor\CreatePingCreateMonitorDto;
+use App\Entity\Monitor;
+use App\Repository\MonitorRepository;
 use App\Request\JsonRequest;
 use App\Service\MonitorService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -26,12 +31,49 @@ final class MonitorController extends AbstractController
     }
 
     #[Route('/monitors', name: 'app_monitors', methods: ['GET'])]
-    public function index(): JsonResponse
+    public function index(MonitorRepository $monitorRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/MonitorController.php',
-        ]);
+        $queryBuilder = $monitorRepository->createQueryBuilder('m');
+
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 10);
+
+        $pagination = $paginator->paginate(
+            $queryBuilder,
+            $page,
+            $limit
+        );
+
+        $data = [
+            'success' => true,
+            'data' => $pagination->getItems(),
+            'pagination' => [
+                'total_items' => $pagination->getTotalItemCount(),
+                'items_per_page' => $pagination->getItemNumberPerPage(),
+                'current_page' => $pagination->getCurrentPageNumber(),
+                'total_pages' => ceil($pagination->getTotalItemCount() / $pagination->getItemNumberPerPage()),
+            ],
+        ];
+
+        return $this->json(
+            data: $data,
+            context: ['groups' => 'monitor:public']
+        );
+    }
+
+    #[Route('/monitors/{monitor:uuid}', name: 'app_monitors_show', methods: ['GET'])]
+    public function show(
+        #[MapEntity(mapping: ['uuid' => 'uuid'])] Monitor $monitor,
+    ): JsonResponse {
+        $data = [
+            'success' => true,
+            'data' => $monitor,
+        ];
+
+        return $this->json(
+            data: $data,
+            context: ['groups' => 'monitor:public']
+        );
     }
 
     #[Route('/monitors', name: 'app_monitors_store', methods: ['POST'])]
@@ -47,14 +89,16 @@ final class MonitorController extends AbstractController
 
         $monitor = $this->monitorService->createMonitor($monitorDto, $monitorTypeDto);
 
-        $monitorData = $this->serializer->serialize($monitor, 'json', [
-            'groups' => ['monitor:public'],
-        ]);
-
-        return $this->json([
+        $data = [
             'success' => true,
             'message' => 'Monitor created successfully',
-            'data' => json_decode($monitorData, true),
-        ], Response::HTTP_CREATED);
+            'data' => $monitor,
+        ];
+
+        return $this->json(
+            data: $data,
+            status: Response::HTTP_CREATED,
+            context: ['groups' => 'monitor:public'],
+        );
     }
 }

@@ -6,6 +6,7 @@ use App\Entity\Monitorable;
 use App\Repository\Monitors\PingMonitorRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PingMonitorRepository::class)]
 class PingMonitor extends Monitorable
@@ -13,9 +14,11 @@ class PingMonitor extends Monitorable
     use TimestampableEntity;
 
     #[ORM\Column(length: 500)]
+    #[Groups(['monitor:public'])]
     private string $hostname;
 
     #[ORM\Column(type: 'smallint', options: ['unsigned' => true])]
+    #[Groups(['monitor:public'])]
     private int $packetSize;
 
     public function __construct(
