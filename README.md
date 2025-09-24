@@ -12,6 +12,7 @@ This is a tinkering project. Not for production yet.
 
 First, create the database and the schema:
 ```bash
+php bin/console --env=test doctrine:database:drop --force
 php bin/console --env=test doctrine:database:create
 php bin/console --env=test doctrine:schema:create
 ```
