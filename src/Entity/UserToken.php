@@ -31,14 +31,14 @@ class UserToken
     private ?string $ipAddress = null;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
-    #[Groups(['user:public'])]
+    #[Groups(['token:public'])]
     private ?\DateTimeInterface $lastUsedAt;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $deletedAt;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
-    #[Groups(['user:public'])]
+    #[Groups(['token:public'])]
     private \DateTimeInterface $createdAt;
 
     #[ORM\Column(type: Types::DATETIMETZ_MUTABLE)]
