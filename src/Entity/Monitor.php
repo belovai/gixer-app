@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\MonitorRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -56,6 +58,12 @@ class Monitor
     #[Groups(['monitor:public'])]
     private int $retryMax;
 
+    /**
+     * @var Collection<int, Metric>
+     */
+    #[ORM\OneToMany(targetEntity: Metric::class, mappedBy: 'monitor')]
+    private Collection $metrics;
+
     public function __construct(
         string $name,
         string $description,
@@ -69,6 +77,7 @@ class Monitor
         $this->interval = $interval;
         $this->retryInterval = $retryInterval;
         $this->retryMax = $retryMax;
+        $this->metrics = new ArrayCollection();
     }
 
     /**
@@ -186,6 +195,36 @@ class Monitor
     public function setRetryMax(int $retryMax): static
     {
         $this->retryMax = $retryMax;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Metric>
+     */
+    public function getMetrics(): Collection
+    {
+        return $this->metrics;
+    }
+
+    public function addMetric(Metric $metric): static
+    {
+        if (!$this->metrics->contains($metric)) {
+            $this->metrics->add($metric);
+            $metric->setMonitor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMetric(Metric $metric): static
+    {
+        if ($this->metrics->removeElement($metric)) {
+            // set the owning side to null (unless already changed)
+            if ($metric->getMonitor() === $this) {
+                $metric->setMonitor(null);
+            }
+        }
 
         return $this;
     }

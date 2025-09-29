@@ -3,14 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\ProbeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProbeRepository::class)]
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
 class Probe
 {
     use SoftDeleteableEntity;
@@ -36,6 +40,12 @@ class Probe
     #[Groups(['probe:public'])]
     private ?\DateTimeInterface $lastSeenAt;
 
+    /**
+     * @var Collection<int, Metric>
+     */
+    #[ORM\OneToMany(targetEntity: Metric::class, mappedBy: 'probe')]
+    private Collection $metrics;
+
     public function __construct(
         string $name,
         string $token,
@@ -43,6 +53,7 @@ class Probe
         $this->uuid = Uuid::v4();
         $this->name = $name;
         $this->token = $token;
+        $this->metrics = new ArrayCollection();
     }
 
     public function getId(): ?string
@@ -94,6 +105,36 @@ class Probe
     public function setToken(string $token): static
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Metric>
+     */
+    public function getMetrics(): Collection
+    {
+        return $this->metrics;
+    }
+
+    public function addMetric(Metric $metric): static
+    {
+        if (!$this->metrics->contains($metric)) {
+            $this->metrics->add($metric);
+            $metric->setProbe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMetric(Metric $metric): static
+    {
+        if ($this->metrics->removeElement($metric)) {
+            // set the owning side to null (unless already changed)
+            if ($metric->getProbe() === $this) {
+                $metric->setProbe(null);
+            }
+        }
 
         return $this;
     }
