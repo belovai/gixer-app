@@ -42,9 +42,11 @@ class Probe
     private ?\DateTimeInterface $lastSeenAt;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['probe:public'])]
     private bool $isEnabled;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['probe:public'])]
     private bool $isDefault;
 
     /**
