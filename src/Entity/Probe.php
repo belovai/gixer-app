@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\DTO\Probe\CreateProbeDto;
 use App\Repository\ProbeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -40,6 +41,12 @@ class Probe
     #[Groups(['probe:public'])]
     private ?\DateTimeInterface $lastSeenAt;
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isEnabled;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    private bool $isDefault;
+
     /**
      * @var Collection<int, Metric>
      */
@@ -47,12 +54,14 @@ class Probe
     private Collection $metrics;
 
     public function __construct(
-        string $name,
+        CreateProbeDto $dto,
         string $token,
     ) {
         $this->uuid = Uuid::v4();
-        $this->name = $name;
+        $this->name = $dto->name;
         $this->token = $token;
+        $this->isEnabled = $dto->enabled;
+        $this->isDefault = $dto->default;
         $this->metrics = new ArrayCollection();
     }
 
@@ -135,6 +144,30 @@ class Probe
                 $metric->setProbe(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isEnabled(): ?bool
+    {
+        return $this->isEnabled;
+    }
+
+    public function setEnabled(bool $enabled): static
+    {
+        $this->isEnabled = $enabled;
+
+        return $this;
+    }
+
+    public function isDefault(): ?bool
+    {
+        return $this->isDefault;
+    }
+
+    public function setDefault(bool $default): static
+    {
+        $this->isDefault = $default;
 
         return $this;
     }

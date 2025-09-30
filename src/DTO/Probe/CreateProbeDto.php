@@ -10,4 +10,10 @@ class CreateProbeDto
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
     public string $name;
+
+    #[Assert\Type('bool')]
+    public bool $enabled;
+
+    #[Assert\Type('bool')]
+    public bool $default;
 }
