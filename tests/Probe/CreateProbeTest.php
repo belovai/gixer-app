@@ -85,6 +85,126 @@ class CreateProbeTest extends ApiTestCase
     }
 
     #[Test]
+    public function createProbeWithMissingName(): void
+    {
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'enabled' => true,
+                    'default' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    #[Test]
+    public function createProbeWithMissingEnabled(): void
+    {
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'default' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    #[Test]
+    public function createProbeWithMissingDefault(): void
+    {
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+    #[Test]
+    public function createProbeWithEnabledNotBool(): void
+    {
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => 1,
+                    'default' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+    #[Test]
+    public function createProbeWithDefaultNotBool(): void
+    {
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => true,
+                    'default' => 1,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    #[Test]
     public function createProbeWithTooLongName(): void
     {
         $client = static::createClient();
