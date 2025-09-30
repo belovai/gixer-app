@@ -49,14 +49,10 @@ class Metric
     private ?\DateTimeInterface $executedAt = null;
 
     public function __construct(
-        Monitor $monitor,
-        Probe $probe,
         MetricStatusEnum $status,
         \DateTimeInterface $scheduledAt,
     ) {
         $this->uuid = Uuid::v4();
-        $this->monitor = $monitor;
-        $this->probe = $probe;
         $this->status = $status;
         $this->scheduledAt = $scheduledAt;
     }
