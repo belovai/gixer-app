@@ -20,6 +20,7 @@ final class UserFactory extends PersistentObjectFactory
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
+        parent::__construct();
     }
 
     public static function class(): string

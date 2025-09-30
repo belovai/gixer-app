@@ -27,7 +27,7 @@ class ProbeService
 
         $token = $this->generateToken();
 
-        $probe = new Probe($createProbeDto->name, hash('sha256', $token));
+        $probe = new Probe($createProbeDto, hash('sha256', $token));
 
         $this->entityManager->persist($probe);
         $this->entityManager->flush();

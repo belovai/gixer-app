@@ -26,6 +26,8 @@ final class Version20250924101623 extends AbstractMigration
               uuid UUID NOT NULL,
               name VARCHAR(255) NOT NULL,
               token VARCHAR(64) NOT NULL,
+              is_enabled BOOLEAN DEFAULT false NOT NULL,
+              is_default BOOLEAN DEFAULT false NOT NULL,
               last_seen_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL,
               deleted_at TIMESTAMP(0) WITHOUT TIME ZONE DEFAULT NULL,
               created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
