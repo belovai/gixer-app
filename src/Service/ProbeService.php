@@ -7,7 +7,9 @@ use App\DTO\Probe\CreateProbeDto;
 use App\DTO\Probe\CreateProbeResponseDto;
 use App\Entity\Probe;
 use App\Exception\ValidationException;
+use App\Message\CreateRabbitMqResourcesForProbe;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ProbeService
@@ -15,6 +17,7 @@ class ProbeService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly ValidatorInterface $validator,
+        private MessageBusInterface $bus,
     ) {
     }
 
@@ -31,6 +34,13 @@ class ProbeService
 
         $this->entityManager->persist($probe);
         $this->entityManager->flush();
+
+        $this->bus->dispatch(new CreateRabbitMqResourcesForProbe(
+            $probe->getId(),
+            $probe->getUuid()->toRfc4122(),
+            $token,
+            'gixer'
+        ));
 
         return new CreateProbeResponseDto(
             $probe,

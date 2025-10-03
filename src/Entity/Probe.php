@@ -67,7 +67,7 @@ class Probe
         $this->metrics = new ArrayCollection();
     }
 
-    public function getId(): ?string
+    public function getId(): int
     {
         return $this->id;
     }

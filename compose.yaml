@@ -1,10 +1,43 @@
 services:
-  ###> doctrine/doctrine-bundle ###
+  app:
+    container_name: gixer-app
+    build:
+      context: ./docker/app
+      args:
+        UID: ${APP_UID:-33}
+        GID: ${APP_GID:-33}
+    volumes:
+      - .:/var/www
+    networks:
+      - gixer
+  nginx:
+    image: nginx:stable
+    volumes:
+      - ./public:/var/www/public
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - gixer
+  rabbitmq:
+    container_name: gixer-rabbitmq
+    image: rabbitmq:4.1-management-alpine
+    command: rabbitmq-server
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-app}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-password}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-gixer}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - ${RABBITMQ_MGM_PORT:-15672}:15672
+    networks:
+      - gixer
   database:
+    container_name: gixer-database
     image: timescale/timescaledb:latest-pg16
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
       POSTGRES_USER: ${POSTGRES_USER:-app}
     healthcheck:
@@ -14,16 +47,12 @@ services:
       start_period: 60s
     volumes:
       - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
     networks:
       - gixer
-###< doctrine/doctrine-bundle ###
 
 volumes:
-  ###> doctrine/doctrine-bundle ###
   database_data:
-###< doctrine/doctrine-bundle ###
+  rabbitmq_data:
 networks:
   gixer:
     driver: bridge
