@@ -29,7 +29,6 @@ final readonly class CreateRabbitMqResourcesForProbeHandler
             $this->rabbitMqAdmin->createUser($message->getUsername(), $message->getPassword());
             $this->rabbitMqAdmin->createQueue($message->getUsername());
             $this->logger->info('Successfully created RabbitMQ resources.');
-
         } catch (\Exception $e) {
             $this->logger->error('Failed to create RabbitMQ resources.', [
                 'exception' => $e->getMessage(),

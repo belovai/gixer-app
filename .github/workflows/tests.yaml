@@ -49,7 +49,7 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
 
       - name: "Set up environment"
-        run: cp .env.test .env
+        run: cp .env.github .env
 
       - name: "Run composer install"
         run: composer install --prefer-dist --no-interaction --no-progress --no-suggest

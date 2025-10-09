@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -8,9 +9,7 @@ use App\DTO\Probe\CreateProbeResponseDto;
 use App\Entity\Probe;
 use App\Event\ProbeCreatedEvent;
 use App\Exception\ValidationException;
-use App\Message\CreateRabbitMqResourcesForProbe;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
