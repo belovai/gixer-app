@@ -49,13 +49,15 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
 
       - name: "Set up environment"
-        run: cp .env.github .env
+        run: |
+          cp .env.test .env
+          sed -i -e 's/gixer-database/localhost/g' .env.test
 
       - name: "Run composer install"
         run: composer install --prefer-dist --no-interaction --no-progress --no-suggest
 
       - name: Run tests
         run: |
-          php bin/console --env=github doctrine:database:create
-          php bin/console --env=github doctrine:schema:create
+          php bin/console --env=test doctrine:database:create
+          php bin/console --env=test doctrine:schema:create
           php bin/phpunit
