@@ -56,6 +56,6 @@ jobs:
 
       - name: Run tests
         run: |
-          php bin/console --env=test doctrine:database:create
-          php bin/console --env=test doctrine:schema:create
+          php bin/console --env=github doctrine:database:create
+          php bin/console --env=github doctrine:schema:create
           php bin/phpunit
