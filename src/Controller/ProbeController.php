@@ -3,9 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\Probe\CreateProbeDto;
-use App\Message\CreateRabbitMqResourcesForProbe;
-use App\Message\LogMessage;
-use App\Repository\MonitorRepository;
 use App\Repository\ProbeRepository;
 use App\Request\JsonRequest;
 use App\Service\ProbeService;
@@ -63,12 +60,6 @@ final class ProbeController extends AbstractController
     {
         $createProbeDto = $this->jsonRequest->denormalize(CreateProbeDto::class);
         $probeResponse = $this->probeService->createProbe($createProbeDto);
-
-        $this->bus->dispatch(new CreateRabbitMqResourcesForProbe(
-            $probeResponse->probe->getId(),
-            $probeResponse->probe->getUuid()->toRfc4122(),
-            $probeResponse->plainToken
-        ));
 
         return $this->json(
             data: [
