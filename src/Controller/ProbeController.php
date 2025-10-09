@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\DTO\Probe\CreateProbeDto;
-use App\Repository\MonitorRepository;
 use App\Repository\ProbeRepository;
 use App\Request\JsonRequest;
 use App\Service\ProbeService;
@@ -12,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api', name: 'api_')]
@@ -20,6 +20,7 @@ final class ProbeController extends AbstractController
     public function __construct(
         private readonly JsonRequest $jsonRequest,
         private readonly ProbeService $probeService,
+        private readonly MessageBusInterface $bus,
     ) {
     }
 

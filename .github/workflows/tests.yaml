@@ -49,7 +49,9 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
 
       - name: "Set up environment"
-        run: cp .env.test .env
+        run: |
+          cp .env.test .env
+          sed -i -e 's/gixer-database/localhost/g' .env.test
 
       - name: "Run composer install"
         run: composer install --prefer-dist --no-interaction --no-progress --no-suggest

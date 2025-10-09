@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -6,15 +7,18 @@ namespace App\Service;
 use App\DTO\Probe\CreateProbeDto;
 use App\DTO\Probe\CreateProbeResponseDto;
 use App\Entity\Probe;
+use App\Event\ProbeCreatedEvent;
 use App\Exception\ValidationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-class ProbeService
+readonly class ProbeService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ValidatorInterface $validator,
+        private EntityManagerInterface $entityManager,
+        private ValidatorInterface $validator,
+        private EventDispatcherInterface $dispatcher,
     ) {
     }
 
@@ -31,6 +35,13 @@ class ProbeService
 
         $this->entityManager->persist($probe);
         $this->entityManager->flush();
+
+        $event = new ProbeCreatedEvent(
+            $probe->getId(),
+            $probe->getUuid()->toRfc4122(),
+            $token,
+        );
+        $this->dispatcher->dispatch($event, 'probe.created');
 
         return new CreateProbeResponseDto(
             $probe,
