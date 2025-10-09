@@ -29,6 +29,11 @@ class RabbitMqAdminService
         $this->setUserPermissions($username);
     }
 
+    public function deleteUser(string $username): void
+    {
+        $this->request('DELETE', sprintf('/api/users/%s', $username));
+    }
+
     public function setUserPermissions(string $username): void
     {
         $this->request('PUT', sprintf('/api/permissions/%s/%s', $this->vhost, $username), [
@@ -48,6 +53,11 @@ class RabbitMqAdminService
                 'durable' => true,
             ],
         ]);
+    }
+
+    public function deleteQueue(string $queueName): void
+    {
+        $this->request('DELETE', sprintf('/api/queues/%s/%s', $this->vhost, $queueName));
     }
 
     private function request(string $method, string $uri, array $options = []): void

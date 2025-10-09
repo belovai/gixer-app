@@ -8,6 +8,7 @@ use App\DTO\Probe\CreateProbeDto;
 use App\DTO\Probe\CreateProbeResponseDto;
 use App\Entity\Probe;
 use App\Event\ProbeCreatedEvent;
+use App\Event\ProbeDeletedEvent;
 use App\Exception\ValidationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -36,12 +37,14 @@ readonly class ProbeService
         $this->entityManager->persist($probe);
         $this->entityManager->flush();
 
-        $event = new ProbeCreatedEvent(
-            $probe->getId(),
-            $probe->getUuid()->toRfc4122(),
-            $token,
+        $this->dispatcher->dispatch(
+            new ProbeCreatedEvent(
+                $probe->getId(),
+                $probe->getUuid()->toRfc4122(),
+                $token,
+            ),
+            'probe.created'
         );
-        $this->dispatcher->dispatch($event, 'probe.created');
 
         return new CreateProbeResponseDto(
             $probe,
@@ -64,5 +67,19 @@ readonly class ProbeService
     private function generateToken(): string
     {
         return bin2hex(random_bytes(32));
+    }
+
+    public function deleteProbe(Probe $probe): void
+    {
+        $this->entityManager->remove($probe);
+        $this->entityManager->flush();
+
+        $this->dispatcher->dispatch(
+            new ProbeDeletedEvent(
+                $probe->getId(),
+                $probe->getUuid()->toRfc4122(),
+            ),
+            'probe.deleted'
+        );
     }
 }
