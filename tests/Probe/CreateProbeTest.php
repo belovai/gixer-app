@@ -155,6 +155,7 @@ class CreateProbeTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(422);
     }
+
     #[Test]
     public function createProbeWithEnabledNotBool(): void
     {
@@ -179,6 +180,7 @@ class CreateProbeTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(422);
     }
+
     #[Test]
     public function createProbeWithDefaultNotBool(): void
     {
@@ -306,6 +308,63 @@ class CreateProbeTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
         $this->assertJsonContains(['message' => 'Probe created successfully']);
         $this->assertJsonContains(['success' => true]);
+    }
+
+    #[Test]
+    public function firstCreatedProbeMustBeDefault(): void
+    {
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => true,
+                    'default' => false,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
+    }
+
+    #[Test]
+    public function firstCreatedProbeMustBeEnabled(): void
+    {
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => false,
+                    'default' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
+    }
+
+    #[Test]
+    public function onlyOneDefaultProbeAllowed(): void
+    {
     }
 
     private function loginUser($client, string $email): string
