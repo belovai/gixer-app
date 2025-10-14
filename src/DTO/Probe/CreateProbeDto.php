@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTO\Probe;
 
+use App\Validator\DefaultProbeIsUnique;
 use App\Validator\FirstProbeIsDefault;
 use App\Validator\FirstProbeIsEnabled;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -22,5 +23,6 @@ class CreateProbeDto
     #[Assert\NotNull]
     #[Assert\Type('bool')]
     #[FirstProbeIsDefault]
+    #[DefaultProbeIsUnique]
     public bool $default;
 }

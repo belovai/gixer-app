@@ -3,6 +3,7 @@
 namespace App\Tests\Probe;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\ProbeFactory;
 use App\Factory\UserFactory;
 use PHPUnit\Framework\Attributes\Test;
 use Zenstruck\Foundry\Test\Factories;
@@ -365,6 +366,32 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function onlyOneDefaultProbeAllowed(): void
     {
+        ProbeFactory::createOne([
+            'default' => true,
+            'enabled' => true,
+        ]);
+
+        $client = static::createClient();
+        $urlGenerator = $client->getContainer()->get('router');
+
+        $user = UserFactory::createOne();
+        $token = $this->loginUser($client, $user->getEmail());
+
+        $client->request(
+            'POST',
+            $urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Another Default',
+                    'enabled' => true,
+                    'default' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
     }
 
     private function loginUser($client, string $email): string
