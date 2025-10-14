@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Validator;
 
 use App\Repository\ProbeRepository;
@@ -9,7 +11,6 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 final class FirstProbeIsDefaultValidator extends ConstraintValidator
 {
-
     public function __construct(
         private readonly ProbeRepository $probeRepository,
     ) {
