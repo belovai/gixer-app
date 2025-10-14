@@ -4,7 +4,7 @@ namespace App\Tests\Probe;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Factory\ProbeFactory;
-use App\Factory\UserFactory;
+use App\Factory\UserTokenFactory;
 use PHPUnit\Framework\Attributes\Test;
 use Zenstruck\Foundry\Test\Factories;
 
@@ -18,8 +18,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -45,8 +47,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -66,8 +70,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -91,8 +97,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -115,8 +123,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -139,8 +149,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -163,8 +175,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -188,8 +202,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -213,8 +229,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -259,8 +277,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $probeName = str_repeat('a', 255); // Exactly 255 characters (max allowed)
 
@@ -288,8 +308,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $probeName = 'Test Probe @#$%^&*()_+-=[]{}|;:,.<>?';
 
@@ -317,8 +339,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -343,8 +367,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -374,8 +400,10 @@ class CreateProbeTest extends ApiTestCase
         $client = static::createClient();
         $urlGenerator = $client->getContainer()->get('router');
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
 
         $client->request(
             'POST',
@@ -392,25 +420,5 @@ class CreateProbeTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(422);
         $this->assertJsonContains(['success' => false]);
-    }
-
-    private function loginUser($client, string $email): string
-    {
-        $urlGenerator = $client->getContainer()->get('router');
-
-        $response = $client->request(
-            'POST',
-            $urlGenerator->generate('api_users_login'),
-            [
-                'json' => [
-                    'email' => $email,
-                    'password' => 'password',
-                ],
-            ]
-        );
-
-        $data = json_decode($response->getContent(), true);
-
-        return $data['data']['token'];
     }
 }
