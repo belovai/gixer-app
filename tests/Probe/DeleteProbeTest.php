@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Probe;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
@@ -20,6 +22,5 @@ class DeleteProbeTest extends ApiTestCase
     #[Test]
     public function deletedProbeRemovesRabbitMQResources(): void
     {
-
     }
 }

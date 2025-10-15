@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Probe;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
@@ -291,7 +293,7 @@ class CreateProbeTest extends ApiTestCase
 
         $probeName = 'Test Probe @#$%^&*()_+-=[]{}|;:,.<>?';
 
-        $response = $this->client->request(
+        $this->client->request(
             'POST',
             $this->urlGenerator->generate('api_app_probes_store'),
             [
