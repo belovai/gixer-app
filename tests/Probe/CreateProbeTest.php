@@ -7,7 +7,7 @@ namespace App\Tests\Probe;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
 use App\Factory\ProbeFactory;
-use App\Factory\UserTokenFactory;
+use App\Tests\HelpersTrait;
 use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\Routing\RouterInterface;
 use Zenstruck\Foundry\Test\Factories;
@@ -15,6 +15,7 @@ use Zenstruck\Foundry\Test\Factories;
 class CreateProbeTest extends ApiTestCase
 {
     use Factories;
+    use HelpersTrait;
 
     private Client $client;
     private RouterInterface $urlGenerator;
@@ -29,10 +30,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function successfulProbeCreation(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -55,10 +53,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingData(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -75,10 +70,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithEmptyName(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -99,10 +91,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingName(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -122,10 +111,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingEnabled(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -145,10 +131,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingDefault(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -168,10 +151,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithEnabledNotBool(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -192,10 +172,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithDefaultNotBool(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -216,10 +193,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithTooLongName(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -258,10 +232,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithValidLongName(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $probeName = str_repeat('a', 255); // Exactly 255 characters (max allowed)
 
@@ -286,10 +257,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithSpecialCharacters(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $probeName = 'Test Probe @#$%^&*()_+-=[]{}|;:,.<>?';
 
@@ -314,10 +282,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function firstCreatedProbeMustBeDefault(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -348,10 +313,7 @@ class CreateProbeTest extends ApiTestCase
         $entityManager->remove($probe); // Soft deletes the probe
         $entityManager->flush();
 
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -373,10 +335,7 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function firstCreatedProbeMustBeEnabled(): void
     {
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',
@@ -403,10 +362,7 @@ class CreateProbeTest extends ApiTestCase
             'enabled' => true,
         ]);
 
-        $token = bin2hex(random_bytes(32));
-        UserTokenFactory::createOne([
-            'token' => $token,
-        ]);
+        $token = $this->userToken();
 
         $this->client->request(
             'POST',

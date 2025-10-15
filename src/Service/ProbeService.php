@@ -11,6 +11,7 @@ use App\Event\ProbeCreatedEvent;
 use App\Event\ProbeDeletedEvent;
 use App\Exception\ValidationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -71,6 +72,10 @@ readonly class ProbeService
 
     public function deleteProbe(Probe $probe): void
     {
+        if ($probe->isDefault()) {
+            throw new BadRequestException('Default probe cannot be deleted.', code: 400);
+        }
+
         $this->entityManager->remove($probe);
         $this->entityManager->flush();
 
