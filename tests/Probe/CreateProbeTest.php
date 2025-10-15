@@ -1,28 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Probe;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
-use App\Factory\UserFactory;
+use ApiPlatform\Symfony\Bundle\Test\Client;
+use App\Factory\ProbeFactory;
+use App\Tests\HelpersTrait;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\Routing\RouterInterface;
 use Zenstruck\Foundry\Test\Factories;
 
 class CreateProbeTest extends ApiTestCase
 {
     use Factories;
+    use HelpersTrait;
+
+    private Client $client;
+    private RouterInterface $urlGenerator;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->client = static::createClient();
+        $this->urlGenerator = $this->client->getContainer()->get('router');
+    }
 
     #[Test]
     public function successfulProbeCreation(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -41,15 +53,11 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingData(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => null,
@@ -62,15 +70,11 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithEmptyName(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -87,15 +91,11 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingName(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -111,15 +111,11 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingEnabled(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -135,15 +131,11 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithMissingDefault(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -155,18 +147,15 @@ class CreateProbeTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(422);
     }
+
     #[Test]
     public function createProbeWithEnabledNotBool(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -179,18 +168,15 @@ class CreateProbeTest extends ApiTestCase
 
         $this->assertResponseStatusCodeSame(422);
     }
+
     #[Test]
     public function createProbeWithDefaultNotBool(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -207,15 +193,11 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithTooLongName(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -232,12 +214,9 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithoutAuthentication(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
-
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'json' => [
                     'name' => 'Test Probe',
@@ -253,17 +232,13 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithValidLongName(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
-
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = $this->userToken();
 
         $probeName = str_repeat('a', 255); // Exactly 255 characters (max allowed)
 
-        $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -282,17 +257,13 @@ class CreateProbeTest extends ApiTestCase
     #[Test]
     public function createProbeWithSpecialCharacters(): void
     {
-        $client = static::createClient();
-        $urlGenerator = $client->getContainer()->get('router');
-
-        $user = UserFactory::createOne();
-        $token = $this->loginUser($client, $user->getEmail());
+        $token = $this->userToken();
 
         $probeName = 'Test Probe @#$%^&*()_+-=[]{}|;:,.<>?';
 
-        $response = $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_app_probes_store'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
                 'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
@@ -308,23 +279,105 @@ class CreateProbeTest extends ApiTestCase
         $this->assertJsonContains(['success' => true]);
     }
 
-    private function loginUser($client, string $email): string
+    #[Test]
+    public function firstCreatedProbeMustBeDefault(): void
     {
-        $urlGenerator = $client->getContainer()->get('router');
+        $token = $this->userToken();
 
-        $response = $client->request(
+        $this->client->request(
             'POST',
-            $urlGenerator->generate('api_users_login'),
+            $this->urlGenerator->generate('api_app_probes_store'),
             [
+                'headers' => ['Authorization' => 'Bearer '.$token],
                 'json' => [
-                    'email' => $email,
-                    'password' => 'password',
+                    'name' => 'Test Probe',
+                    'enabled' => true,
+                    'default' => false,
                 ],
             ]
         );
 
-        $data = json_decode($response->getContent(), true);
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
+    }
 
-        return $data['data']['token'];
+    #[Test]
+    public function firstCreatedProbeMustBeDefaultEvenIfThereIsDeletedDefault(): void
+    {
+        $probe = ProbeFactory::createOne([
+            'default' => true,
+            'enabled' => true,
+        ]);
+
+        $entityManager = static::getContainer()->get('doctrine')->getManager();
+        $entityManager->remove($probe); // Soft deletes the probe
+        $entityManager->flush();
+
+        $token = $this->userToken();
+
+        $this->client->request(
+            'POST',
+            $this->urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => true,
+                    'default' => false,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
+    }
+
+    #[Test]
+    public function firstCreatedProbeMustBeEnabled(): void
+    {
+        $token = $this->userToken();
+
+        $this->client->request(
+            'POST',
+            $this->urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => false,
+                    'default' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
+    }
+
+    #[Test]
+    public function onlyOneDefaultProbeAllowed(): void
+    {
+        ProbeFactory::createOne([
+            'default' => true,
+            'enabled' => true,
+        ]);
+
+        $token = $this->userToken();
+
+        $this->client->request(
+            'POST',
+            $this->urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Another Default',
+                    'enabled' => true,
+                    'default' => true,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
     }
 }

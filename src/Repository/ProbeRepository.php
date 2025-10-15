@@ -16,28 +16,14 @@ class ProbeRepository extends ServiceEntityRepository
         parent::__construct($registry, Probe::class);
     }
 
-    //    /**
-    //     * @return Probe[] Returns an array of Probe objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Probe
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findCurrentDefault(): ?Probe
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.isDefault = :isDefault')
+            ->andWhere('p.deletedAt IS NULL')
+            ->setParameter('isDefault', true)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }
