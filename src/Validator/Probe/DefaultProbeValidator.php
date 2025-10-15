@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Validator;
+namespace App\Validator\Probe;
 
 use App\Repository\ProbeRepository;
 use Symfony\Component\Validator\Constraint;
@@ -22,14 +22,7 @@ final class DefaultProbeValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, DefaultProbe::class);
         }
 
-        $existingDefaultProbe = $this
-            ->probeRepository
-            ->createQueryBuilder('m')
-            ->where('m.deletedAt is null')
-            ->andWhere('m.isDefault = true')
-            ->andWhere('m.isEnabled = true')
-            ->getQuery()
-            ->getOneOrNullResult();
+        $existingDefaultProbe = $this->probeRepository->findCurrentDefault();
 
         if (is_null($existingDefaultProbe) && $value === false) {
             // No default non deleted probe found, so it must be default

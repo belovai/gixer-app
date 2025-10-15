@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\Probe\CreateProbeDto;
+use App\DTO\Probe\UpdateProbeDto;
 use App\Entity\Probe;
 use App\Repository\ProbeRepository;
 use App\Request\JsonRequest;
@@ -82,5 +83,22 @@ final class ProbeController extends AbstractController
             'success' => true,
             'message' => 'Probe deleted successfully',
         ]);
+    }
+
+    #[Route('/probes/{probe:uuid}', name: 'app_probes_update', methods: ['PUT', 'PATCH'])]
+    public function update(
+        #[MapEntity(mapping: ['uuid' => 'uuid'])] Probe $probe,
+    ): JsonResponse {
+        $updateProbeDto = $this->jsonRequest->denormalize(UpdateProbeDto::class);
+        $probeResponse = $this->probeService->updateProbe($probe, $updateProbeDto);
+
+        return $this->json(
+            data: [
+                'success' => true,
+                'message' => 'Probe updated successfully',
+                'data' => $probeResponse,
+            ],
+            context: ['groups' => 'probe:public'],
+        );
     }
 }
