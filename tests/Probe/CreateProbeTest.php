@@ -337,6 +337,40 @@ class CreateProbeTest extends ApiTestCase
     }
 
     #[Test]
+    public function firstCreatedProbeMustBeDefaultEvenIfThereIsDeletedDefault(): void
+    {
+        $probe = ProbeFactory::createOne([
+            'default' => true,
+            'enabled' => true,
+        ]);
+
+        $entityManager = static::getContainer()->get('doctrine')->getManager();
+        $entityManager->remove($probe); // Soft deletes the probe
+        $entityManager->flush();
+
+        $token = bin2hex(random_bytes(32));
+        UserTokenFactory::createOne([
+            'token' => $token,
+        ]);
+
+        $this->client->request(
+            'POST',
+            $this->urlGenerator->generate('api_app_probes_store'),
+            [
+                'headers' => ['Authorization' => 'Bearer '.$token],
+                'json' => [
+                    'name' => 'Test Probe',
+                    'enabled' => true,
+                    'default' => false,
+                ],
+            ]
+        );
+
+        $this->assertResponseStatusCodeSame(422);
+        $this->assertJsonContains(['success' => false]);
+    }
+
+    #[Test]
     public function firstCreatedProbeMustBeEnabled(): void
     {
         $token = bin2hex(random_bytes(32));
