@@ -17,7 +17,7 @@ class UserTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, UserToken::class);
     }
 
-    public function findOneByValue(string $token): ?UserToken
+    public function findOneByToken(string $token): ?UserToken
     {
         $token = hash('sha256', $token);
 

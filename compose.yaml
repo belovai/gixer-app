@@ -30,6 +30,7 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     ports:
+      - ${RABBITMQ_PORT:-5672}:5672
       - ${RABBITMQ_MGM_PORT:-15672}:15672
     networks:
       - gixer

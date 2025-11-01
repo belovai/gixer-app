@@ -11,12 +11,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity(repositoryClass: ProbeRepository::class)]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
-class Probe
+class Probe implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use SoftDeleteableEntity;
     use TimestampableEntity;
@@ -172,5 +174,26 @@ class Probe
         $this->isDefault = $default;
 
         return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->token;
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_PROBE'];
+    }
+
+    #[\Deprecated]
+    public function eraseCredentials(): void
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->uuid->toRfc4122();
     }
 }

@@ -38,9 +38,9 @@ class RabbitMqAdminService
     {
         $this->request('PUT', sprintf('/api/permissions/%s/%s', $this->vhost, $username), [
             'json' => [
-                'configure' => '.'.$username,
-                'write' => '.'.$username,
-                'read' => '.'.$username,
+                'configure' => $username,
+                'write' => $username,
+                'read' => $username,
             ],
         ]);
     }
