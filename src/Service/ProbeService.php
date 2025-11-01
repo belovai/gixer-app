@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\DTO\Probe\CreateProbeDto;
 use App\DTO\Probe\CreateProbeResponseDto;
+use App\DTO\Probe\HeartbeatProbeDto;
 use App\DTO\Probe\UpdateProbeDto;
 use App\Entity\Probe;
 use App\Event\ProbeCreatedEvent;
@@ -118,5 +119,9 @@ readonly class ProbeService
             ),
             'probe.deleted'
         );
+    }
+
+    public function heartbeat(Probe $probe, HeartbeatProbeDto $heartbeatProbeDto): void
+    {
     }
 }
