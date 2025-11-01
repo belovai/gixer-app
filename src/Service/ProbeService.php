@@ -123,6 +123,5 @@ readonly class ProbeService
 
     public function heartbeat(Probe $probe, HeartbeatProbeDto $heartbeatProbeDto): void
     {
-        //
     }
 }
